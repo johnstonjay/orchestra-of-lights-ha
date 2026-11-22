@@ -1,0 +1,122 @@
+set_theme:
+  name: Set Theme & Effect
+  description: Set a preset lightshow, holiday theme, or color theme with an optional animation effect.
+  fields:
+    hub_id:
+      name: Hub ID
+      description: Optional 12-character Hub ID (if you have multiple hubs; omit to target all hubs).
+      required: false
+      example: "aabbccddeeff"
+      selector:
+        text:
+    theme:
+      name: Theme
+      description: Theme name (e.g. "Christmas LightShow", "Red & Green", "Halloween") or numeric theme ID.
+      required: true
+      example: "Christmas LightShow"
+      selector:
+        text:
+    effect:
+      name: Effect
+      description: Optional animation effect ("Steady", "Glimmer", "Sparkle", "Starry Night", "Lightshow").
+      required: false
+      example: "Sparkle"
+      selector:
+        select:
+          options:
+            - "Steady"
+            - "Glimmer"
+            - "Sparkle"
+            - "Starry Night"
+            - "Lightshow"
+
+play_song:
+  name: Play Synchronized Song
+  description: Start playing one of the 12 built-in synchronized musical lightshows, optionally setting speaker volume first.
+  fields:
+    hub_id:
+      name: Hub ID
+      description: Optional 12-character Hub ID (omit to target all hubs).
+      required: false
+      selector:
+        text:
+    song:
+      name: Song
+      description: Song name (e.g. "Feliz Navidad", "Bell Carol") or index (0-11).
+      required: true
+      example: "Bell Carol"
+      selector:
+        text:
+    volume:
+      name: Volume
+      description: Optional volume percentage (0-100) to set before starting playback.
+      required: false
+      example: 50
+      selector:
+        number:
+          min: 0
+          max: 100
+          unit_of_measurement: "%"
+
+set_playlist:
+  name: Set Music Playlist
+  description: Configure the hub's active playlist order (up to 12 songs).
+  fields:
+    hub_id:
+      name: Hub ID
+      description: Optional 12-character Hub ID (omit to target all hubs).
+      required: false
+      selector:
+        text:
+    songs:
+      name: Songs
+      description: Ordered list of song names or indices (0-11).
+      required: true
+      example:
+        - "Jingle Bells (Instrumental)"
+        - "Bell Carol"
+        - "Feliz Navidad"
+      selector:
+        object:
+
+set_timer:
+  name: Configure Hub Built-in Timer
+  description: Enable, disable, or reconfigure the hub's internal daily on/off timer.
+  fields:
+    hub_id:
+      name: Hub ID
+      description: Optional 12-character Hub ID (omit to target all hubs).
+      required: false
+      selector:
+        text:
+    enabled:
+      name: Enabled
+      description: Turn the hub's internal timer on or off (recommended off when scheduling via Home Assistant).
+      required: true
+      selector:
+        boolean:
+    start_time:
+      name: Start Time
+      description: Daily start time in HH:MM (24-hour format).
+      required: false
+      example: "17:00"
+      selector:
+        text:
+    stop_time:
+      name: Stop Time
+      description: Daily stop time in HH:MM (24-hour format).
+      required: false
+      example: "21:00"
+      selector:
+        text:
+
+refresh:
+  name: Refresh Hub Status
+  description: Force an immediate refresh of live lighting state, Wi-Fi RSSI, firmware version, and paired 2.4 GHz products.
+  fields:
+    hub_id:
+      name: Hub ID
+      description: Optional 12-character Hub ID (omit to refresh all hubs).
+      required: false
+      selector:
+        text:

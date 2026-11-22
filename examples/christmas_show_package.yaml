@@ -1,0 +1,183 @@
+# Example Home Assistant Package: Orchestra of Lights Choreography
+# Replace the `switch.*` entities below with your own indoor smart plugs.
+
+input_boolean:
+  christmas_auto_scenes:
+    name: Christmas Auto Scenes (Theme Rotation & Cozy Wind-Down)
+    icon: mdi:auto-fix
+    initial: true
+
+script:
+  christmas_wave_reveal_on:
+    alias: "Christmas Wave Reveal (ON)"
+    icon: mdi:waves-arrow-up
+    mode: restart
+    fields:
+      theme:
+        name: Orchestra Theme
+        default: "Christmas LightShow"
+        selector:
+          text:
+      effect:
+        name: Orchestra Effect
+        default: "Lightshow"
+        selector:
+          select:
+            options:
+              - "Steady"
+              - "Glimmer"
+              - "Sparkle"
+              - "Starry Night"
+              - "Lightshow"
+      include_orchestra:
+        name: Include Orchestra of Lights
+        default: true
+        selector:
+          boolean:
+    sequence:
+      - action: switch.turn_on
+        target:
+          entity_id: switch.window_christmas_lights
+      - delay:
+          milliseconds: 1500
+      - action: switch.turn_on
+        target:
+          entity_id: switch.living_room_christmas_tree
+      - if:
+          - condition: template
+            value_template: "{{ include_orchestra | default(true) }}"
+        then:
+          - delay:
+              milliseconds: 1500
+          - action: orchestra_of_lights.set_theme
+            continue_on_error: true
+            data:
+              theme: "{{ theme | default('Christmas LightShow') }}"
+              effect: "{{ effect | default('Lightshow') }}"
+
+  christmas_wave_reveal_off:
+    alias: "Christmas Wave Close (OFF)"
+    icon: mdi:waves-arrow-right
+    mode: restart
+    fields:
+      include_orchestra:
+        name: Include Orchestra of Lights
+        default: true
+        selector:
+          boolean:
+    sequence:
+      - if:
+          - condition: template
+            value_template: "{{ include_orchestra | default(true) }}"
+        then:
+          - action: light.turn_off
+            continue_on_error: true
+            target:
+              entity_id: light.orchestra_of_lights_lights
+          - delay:
+              milliseconds: 1500
+      - action: switch.turn_off
+        target:
+          entity_id: switch.living_room_christmas_tree
+      - delay:
+          milliseconds: 1500
+      - action: switch.turn_off
+        target:
+          entity_id: switch.window_christmas_lights
+
+  christmas_showtime:
+    alias: "Christmas Showtime (Music + Wave Reveal)"
+    icon: mdi:music-box-multiple
+    mode: restart
+    fields:
+      song:
+        name: Song
+        default: "Bell Carol"
+        selector:
+          text:
+      volume:
+        name: Volume (%)
+        default: 45
+        selector:
+          number:
+            min: 10
+            max: 100
+            step: 5
+            unit_of_measurement: "%"
+    sequence:
+      - action: script.christmas_wave_reveal_on
+        data:
+          include_orchestra: false
+      - action: orchestra_of_lights.play_song
+        continue_on_error: true
+        data:
+          song: "{{ song | default('Bell Carol') }}"
+          volume: "{{ volume | default(45) | int }}"
+
+  christmas_evening_theme:
+    alias: "Christmas Evening Theme (Tonight's Featured Show)"
+    icon: mdi:palette-swatch
+    mode: single
+    sequence:
+      - variables:
+          day_idx: "{{ now().weekday() }}"
+          nightly_themes:
+            - theme: "Christmas LightShow"
+              effect: "Lightshow"
+            - theme: "Red & Green"
+              effect: "Sparkle"
+            - theme: "Frozen Fire"
+              effect: "Lightshow"
+            - theme: "Red & White"
+              effect: "Glimmer"
+            - theme: "Rainbow Wave"
+              effect: "Lightshow"
+            - theme: "Color Frenzy"
+              effect: "Lightshow"
+            - theme: "White & Blue"
+              effect: "Starry Night"
+          pick: "{{ nightly_themes[day_idx | int] }}"
+      - action: orchestra_of_lights.set_theme
+        continue_on_error: true
+        data:
+          theme: "{{ pick.theme }}"
+          effect: "{{ pick.effect }}"
+
+  christmas_cozy_wind_down:
+    alias: "Christmas Cozy Wind-Down"
+    icon: mdi:weather-night
+    mode: single
+    sequence:
+      - action: orchestra_of_lights.set_theme
+        continue_on_error: true
+        data:
+          theme: "Warm White"
+          effect: "Starry Night"
+
+automation:
+  - id: christmas_orchestra_nightly_theme_rotation
+    alias: "Christmas - Nightly Orchestra Theme Rotation (5:00 PM)"
+    triggers:
+      - trigger: time
+        at: "17:00:00"
+    conditions:
+      - condition: state
+        entity_id: input_boolean.christmas_auto_scenes
+        state: "on"
+    actions:
+      - action: script.christmas_evening_theme
+
+  - id: christmas_orchestra_cozy_wind_down
+    alias: "Christmas - Cozy Wind-Down (9:30 PM)"
+    triggers:
+      - trigger: time
+        at: "21:30:00"
+    conditions:
+      - condition: state
+        entity_id: input_boolean.christmas_auto_scenes
+        state: "on"
+      - condition: state
+        entity_id: light.orchestra_of_lights_lights
+        state: "on"
+    actions:
+      - action: script.christmas_cozy_wind_down

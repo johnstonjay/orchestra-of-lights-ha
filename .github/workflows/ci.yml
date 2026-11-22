@@ -1,0 +1,35 @@
+name: CI
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+
+jobs:
+  test:
+    name: Python ${{ matrix.python-version }} Tests & Lint
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.12", "3.13"]
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install CI tools (PyYAML & Ruff)
+        run: python -m pip install --upgrade pip pyyaml ruff
+
+      - name: Lint with Ruff
+        run: ruff check custom_components/ ool_cli.py tests/
+
+      - name: Run regression test suite
+        run: python -m unittest discover -s tests -v
+
+      - name: Smoke-test CLI list command
+        run: python ool_cli.py list > /dev/null

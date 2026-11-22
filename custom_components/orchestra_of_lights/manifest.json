@@ -1,0 +1,11 @@
+{
+  "domain": "orchestra_of_lights",
+  "name": "Gemmy Orchestra of Lights",
+  "codeowners": ["@johnstonjay"],
+  "config_flow": true,
+  "documentation": "https://github.com/johnstonjay/orchestra-of-lights-ha",
+  "iot_class": "local_push",
+  "issue_tracker": "https://github.com/johnstonjay/orchestra-of-lights-ha/issues",
+  "requirements": [],
+  "version": "1.0.0"
+}

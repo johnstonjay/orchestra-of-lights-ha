@@ -1,0 +1,37 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Connect Gemmy Orchestra of Lights Hub",
+        "description": "Enter your Hub's 12-character MAC address / Hub ID (shown in your router as 'espressif' or in the app under Hub Info). Local IP is optional—in 'auto' mode, direct LAN TCP port 8087 is tried first with automatic fallback to AWS IoT MQTT.",
+        "data": {
+          "hub_id": "Hub ID / MAC Address (e.g. aabbccddeeff)",
+          "host": "Local IP Address (optional, for LAN TCP 8087)",
+          "transport": "Connection Mode",
+          "password": "Hub Password (optional)",
+          "port": "Local TCP Port"
+        }
+      }
+    },
+    "error": {
+      "invalid_hub_id": "Enter a valid 12-character hex MAC address / Hub ID.",
+      "cannot_connect": "Could not reach the hub. Check the Hub ID, IP address, and that the hub is powered on."
+    },
+    "abort": {
+      "already_configured": "This Orchestra of Lights Hub is already configured."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Orchestra of Lights Hub Options",
+        "data": {
+          "host": "Local IP Address (optional)",
+          "transport": "Connection Mode",
+          "password": "Hub Password (optional)",
+          "port": "Local TCP Port"
+        }
+      }
+    }
+  }
+}

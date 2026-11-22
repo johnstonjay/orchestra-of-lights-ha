@@ -1,0 +1,204 @@
+# Example Home Assistant Dashboard View: "Christmas Command Center"
+# Uses 100% built-in Home Assistant cards (no custom HACS frontend cards required).
+# Customize the `switch.*` entity IDs under "Indoor Christmas Outlets" to match your smart plugs.
+
+title: Christmas
+path: christmas
+icon: mdi:pine-tree
+type: sections
+max_columns: 3
+sections:
+  - type: grid
+    cards:
+      - type: heading
+        heading: Orchestra of Lights
+        heading_style: title
+        icon: mdi:sparkles
+        badges:
+          - type: entity
+            entity: sensor.orchestra_of_lights_connection_transport
+            icon: mdi:lan-connect
+          - type: entity
+            entity: sensor.orchestra_of_lights_wi_fi_signal
+            icon: mdi:wifi
+
+      - type: light
+        entity: light.orchestra_of_lights_lights
+        name: Orchestra Lights & Hub
+
+      - type: grid
+        columns: 2
+        square: false
+        cards:
+          - type: button
+            name: Christmas Show
+            icon: mdi:pine-tree
+            icon_height: 32px
+            tap_action:
+              action: perform-action
+              perform_action: orchestra_of_lights.set_theme
+              data:
+                theme: Christmas LightShow
+                effect: Lightshow
+          - type: button
+            name: Rainbow Wave
+            icon: mdi:looks
+            icon_height: 32px
+            tap_action:
+              action: perform-action
+              perform_action: orchestra_of_lights.set_theme
+              data:
+                theme: Rainbow Wave
+                effect: Lightshow
+          - type: button
+            name: Frozen Fire
+            icon: mdi:snowflake
+            icon_height: 32px
+            tap_action:
+              action: perform-action
+              perform_action: orchestra_of_lights.set_theme
+              data:
+                theme: Frozen Fire
+                effect: Lightshow
+          - type: button
+            name: Red & Green Sparkle
+            icon: mdi:creation
+            icon_height: 32px
+            tap_action:
+              action: perform-action
+              perform_action: orchestra_of_lights.set_theme
+              data:
+                theme: Red & Green
+                effect: Sparkle
+          - type: button
+            name: Warm White Starry
+            icon: mdi:star-four-points
+            icon_height: 32px
+            tap_action:
+              action: perform-action
+              perform_action: orchestra_of_lights.set_theme
+              data:
+                theme: Warm White
+                effect: Starry Night
+          - type: button
+            name: Random Show
+            icon: mdi:dice-multiple
+            icon_height: 32px
+            entity: button.orchestra_of_lights_random_show
+            tap_action:
+              action: perform-action
+              perform_action: button.press
+              target:
+                entity_id: button.orchestra_of_lights_random_show
+
+      - type: entities
+        title: Theme & Effect Studio
+        show_header_toggle: false
+        entities:
+          - entity: select.orchestra_of_lights_theme
+            name: Theme (44 Presets)
+          - entity: select.orchestra_of_lights_effect
+            name: Animation Effect
+
+  - type: grid
+    cards:
+      - type: heading
+        heading: Musical Lightshow Jukebox
+        heading_style: title
+        icon: mdi:music-note
+
+      - type: media-control
+        entity: media_player.orchestra_of_lights_music_show
+
+      - type: entities
+        show_header_toggle: false
+        entities:
+          - entity: select.orchestra_of_lights_song
+            name: Play Song (12 Songs)
+          - entity: number.orchestra_of_lights_speaker_volume
+            name: Speaker Volume
+          - entity: button.orchestra_of_lights_next_song
+            name: Skip to Next Song
+          - entity: switch.orchestra_of_lights_bluetooth_speaker
+            name: Bluetooth Speaker Mode
+
+  - type: grid
+    cards:
+      - type: heading
+        heading: Indoor Christmas Outlets
+        heading_style: title
+        icon: mdi:power-socket-us
+
+      - type: grid
+        columns: 2
+        square: false
+        cards:
+          - type: button
+            name: Showtime!
+            icon: mdi:music-box-multiple
+            icon_height: 30px
+            tap_action:
+              action: perform-action
+              perform_action: script.christmas_showtime
+          - type: button
+            name: Wave Reveal ON
+            icon: mdi:waves-arrow-up
+            icon_height: 30px
+            tap_action:
+              action: perform-action
+              perform_action: script.christmas_wave_reveal_on
+          - type: button
+            name: Tonight's Theme
+            icon: mdi:palette-swatch
+            icon_height: 30px
+            tap_action:
+              action: perform-action
+              perform_action: script.christmas_evening_theme
+          - type: button
+            name: Cozy Wind-Down
+            icon: mdi:weather-night
+            icon_height: 30px
+            tap_action:
+              action: perform-action
+              perform_action: script.christmas_cozy_wind_down
+          - type: button
+            name: Wave Close OFF
+            icon: mdi:waves-arrow-right
+            icon_height: 30px
+            tap_action:
+              action: perform-action
+              perform_action: script.christmas_wave_reveal_off
+          - type: tile
+            entity: input_boolean.christmas_auto_scenes
+            name: Auto Scenes
+            icon: mdi:auto-fix
+
+      - type: tile
+        entity: switch.living_room_christmas_tree
+        name: Living Room Christmas Tree
+        icon: mdi:pine-tree
+        color: green
+      - type: tile
+        entity: switch.window_christmas_lights
+        name: Window Christmas Lights
+        icon: mdi:window-closed-variant
+        color: amber
+
+      - type: heading
+        heading: Hub Timer & Diagnostics
+        heading_style: subtitle
+        icon: mdi:chip
+
+      - type: entities
+        show_header_toggle: false
+        entities:
+          - entity: switch.orchestra_of_lights_hub_built_in_timer
+            name: Hub Built-in Timer
+          - entity: sensor.orchestra_of_lights_paired_products
+            name: Paired 2.4 GHz Products
+          - entity: sensor.orchestra_of_lights_wi_fi_signal
+            name: Hub Wi-Fi Signal
+          - entity: sensor.orchestra_of_lights_connection_transport
+            name: Connection Transport
+          - entity: button.orchestra_of_lights_refresh_status
+            name: Refresh Hub Status
